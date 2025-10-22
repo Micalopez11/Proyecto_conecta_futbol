@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conecta fútbol - Conecta jugadores, clubes y representantes.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap">
+</head>
+<body class="bg-gray-100">
+    <nav class="bg-football text-white shadow-lg fixed w-full z-10">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-2">
+            <div class="flex items-center">
+                <img src="img/Cvw1mfH.png" alt="Football Connect Logo" class="h-12 w-12 mr-3">
+                <span class="font-extrabold text-2xl md:text-4xl" style="font-family: 'Nunito', sans-serif;">Conecta fútbol</span>            </div>
+            <!-- Botones para usuarios no logueados -->
+            <div class="flex items-center" id="nav-buttons">
+                <button class="px-4 py-2 rounded bg-white text-football hover:bg-gray-200 mr-2" id="login-btn">Iniciar sesión / Registrarse</button>
+            </div>
+            <!-- Navegación de usuario logueado -->
+            <div id="user-nav" class="hidden flex items-center space-x-2">
+                <!-- Botón Suscribirse solo visible con sesión activa -->
+                <button id="subscribe-btn" class="px-4 py-2 rounded bg-white text-football hover:bg-gray-200 mr-2">Suscribete</button>
+                <div id="user-profile-display" class="flex items-center space-x-2">
+                    <img id="user-profile-picture" src="https://placehold.co/40x40/cccccc/ffffff/png?text=User" alt="Profile" class="w-10 h-10 rounded-full object-cover border-2 border-white">
+                    <span id="user-name" class="font-bold"></span>
+                </div>
+                <button id="logout-btn" class="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded text-sm">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <div class="container max-w-screen-2xl mx-auto px-4 pt-20">
+        <div id="home-page" class="py-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl font-bold text-football mb-4">Conecta con la comunidad del fútbol</h1>
+                    <p class="text-lg text-gray-700 mb-6">Conecta fútbol reune jugadores, clubes y representantes en una sola plataforma.</p>
+                    <div class="flex flex-col sm:flex-row">
+                        <button class="bg-football text-white px-6 py-3 rounded-lg font-bold mb-4 sm:mb-0 sm:mr-4 hover:bg-green-800" id="home-register-btn">Registrate ahora</button>
+                        <button class="border-2 border-football text-football px-6 py-3 rounded-lg font-bold hover:bg-gray-100" id="learn-more-btn">Conoce más</button>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="relative w-full h-80 overflow-hidden rounded-3xl shadow-xl">
+                        <img id="slide-img-current" src="img/imagen1.png" alt="Imagen actual"
+                            class="absolute inset-0 w-full h-80 object-cover transition-transform duration-700 ease-in-out z-10">
+                        <img id="slide-img-next" src="img/imagen2.png" alt="Imagen siguiente"
+                            class="absolute inset-0 w-full h-80 object-cover transition-transform duration-700 ease-in-out z-0 translate-x-full">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="text-football text-3xl mb-4">
+                        <i class="fas fa-user-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Jugadores</h3>
+                    <p class="text-gray-600">Crea tu perfil, muestra tus habilidades y haz que te descubran clubes y representantes que buscan talento.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="text-football text-3xl mb-4">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Clubes</h3>
+                    <p class="text-gray-600">Encuentra jugadores que necesites en tu equipo y conecta con representantes para fortalecer tu equipo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card-hover">
+                    <div class="text-football text-3xl mb-4">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Representantes</h3>
+                    <p class="text-gray-600">Encuentra nuevos talentos para ser representados.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="subscription-page" class="hidden py-8">
+            <h2 class="text-3xl font-bold text-center text-football mb-8">Nuestros planes de suscripción</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-2 border-gray-200 card-hover">
+                    <h3 class="text-2xl font-bold text-football mb-4">Básico</h3>
+                    <p class="text-gray-600 mb-4">Perfecto para empezar</p>
+                    <p class="text-4xl font-bold text-football mb-6">Gratis</p>
+                    <ul class="text-gray-700 text-left mb-6 space-y-2">
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Crear perfil</li>
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Búsqueda básica de perfiles</li>
+                        <li><i class="fas fa-times-circle text-red-500 mr-2"></i> Contacto limitado</li>
+                        <li><i class="fas fa-times-circle text-red-500 mr-2"></i> Sin estadísticas avanzadas</li>
+                    </ul>
+                    <button class="bg-football text-white px-6 py-3 rounded-lg font-bold w-full subscription-select" data-plan="basic">Seleccionar plan</button>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-2 border-yellow-500 transform scale-105 relative">
+                    <div class="absolute -top-3 right-0 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">Popular</div>
+                    <h3 class="text-2xl font-bold text-football mb-4">Pro</h3>
+                    <p class="text-gray-600 mb-4">Para usuarios activos</p>
+                    <p class="text-4xl font-bold text-football mb-6">$9.99<span class="text-lg text-gray-500">/mes</span></p>
+                    <ul class="text-gray-700 text-left mb-6 space-y-2">
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Todo el plan Básico</li>
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Búsqueda avanzada con filtros</li>
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Contacto ilimitado</li>
+                        <li><i class="fas fa-times-circle text-red-500 mr-2"></i> Sin estadísticas avanzadas</li>
+                    </ul>
+                    <button class="bg-yellow-500 text-white px-6 py-3 rounded-lg font-bold w-full subscription-select" data-plan="pro">Seleccionar plan</button>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md text-center border-2 border-gray-200 card-hover">
+                    <h3 class="text-2xl font-bold text-football mb-4">Élite</h3>
+                    <p class="text-gray-600 mb-4">Para profesionales serios</p>
+                    <p class="text-4xl font-bold text-football mb-6">$19.99<span class="text-lg text-gray-500">/mes</span></p>
+                    <ul class="text-gray-700 text-left mb-6 space-y-2">
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Todo el plan Pro</li>
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Estadísticas avanzadas</li>
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Soporte prioritario</li>
+                        <li><i class="fas fa-check-circle text-green-500 mr-2"></i> Visibilidad destacada del perfil</li>
+                    </ul>
+                    <button class="bg-football text-white px-6 py-3 rounded-lg font-bold w-full subscription-select" data-plan="elite">Seleccionar plan</button>
+                </div>
+            </div>
+
+            <div id="payment-form-container" class="hidden bg-white p-8 rounded-lg shadow-md max-w-md mx-auto mt-8">
+                <h3 class="text-2xl font-bold text-center text-football mb-6">Detalles de pago para plan <span id="payment-plan"></span></h3>
+                <p class="text-center text-xl font-semibold mb-6">Total: <span id="payment-amount"></span></p>
+                <form id="payment-form" class="space-y-4">
+                    <div>
+                        <label for="card-number" class="block text-gray-700 font-bold mb-2">Número de tarjeta</label>
+                        <input type="text" id="card-number" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="XXXX XXXX XXXX XXXX" required>
+                    </div>
+                    <div class="flex space-x-4">
+                        <div class="w-1/2">
+                            <label for="expiry-date" class="block text-gray-700 font-bold mb-2">Fecha de caducidad</label>
+                            <input type="text" id="expiry-date" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="MM/AA" required>
+                        </div>
+                        <div class="w-1/2">
+                            <label for="cvv" class="block text-gray-700 font-bold mb-2">CVV</label>
+                            <input type="text" id="cvv" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="XXX" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-football text-white p-3 rounded-lg font-bold hover:bg-green-800 focus:outline-none">Pagar</button>
+                    <button type="button" id="back-to-plans" class="w-full mt-2 border-2 border-football text-football p-3 rounded-lg font-bold hover:bg-gray-100 focus:outline-none">Volver a planes</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="dashboard" class="hidden">
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/5 bg-white shadow-md rounded-lg p-4 sidebar">
+                    <ul class="space-y-2" id="sidebar-nav">
+                        </ul>
+                </div>
+                
+                <div class="md:w-4/5 md:pl-6 main-content">
+                    <div id="player-profile" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Perfil de jugador</h2>
+                        <form id="player-profile-form">
+                            <div class="mb-6">
+                                <div class="flex flex-col items-center mb-4">
+                                    <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden" id="player-photo-preview">
+                                        <i class="fas fa-user text-4xl text-gray-400"></i>
+                                    </div>
+                                    <label class="cursor-pointer bg-football text-white px-4 py-2 rounded">
+                                        <span>Subir una foto</span>
+                                        <input type="file" class="hidden" id="player-photo" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-name">Nombre completo</label>
+                                    <input type="text" id="player-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control bg-gray-100 cursor-not-allowed" required readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-username">Nombre de usuario</label>
+                                    <input type="text" id="player-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-age">Edad</label>
+                                    <input type="number" id="player-age" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required min="14" max="45">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-height">Altura (cm)</label>
+                                    <input type="number" id="player-height" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required min="140" max="220">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-weight">Peso (kg)</label>
+                                    <input type="number" id="player-weight" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required min="40" max="150">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2">Posicion de preferencia</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="player-position mr-2" value="Goalkeeper">
+                                            Arquero
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="player-position mr-2" value="Defender">
+                                            Defensor
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="player-position mr-2" value="Midfielder">
+                                            Mediocampista
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="player-position mr-2" value="Forward">
+                                            Delantero
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2">Pie habil</label>
+                                    <div class="flex">
+                                        <label class="inline-flex items-center mr-4">
+                                            <input type="radio" name="dominant-foot" value="Right" class="mr-2" checked>
+                                            Derecho
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="dominant-foot" value="Left" class="mr-2">
+                                            Izquierdo
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-location">Ubicación</label>
+                                    <input type="text" id="player-location" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-gray-700 font-bold mb-2" for="player-experience">Experiencia</label>
+                                    <textarea id="player-experience" rows="4" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Describe your football experience, previous teams, achievements, etc."></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Guardar perfil</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="club-profile" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Perfil de club</h2>
+                        <form id="club-profile-form">
+                            <div class="mb-6">
+                                <div class="flex flex-col items-center mb-4">
+                                    <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden" id="club-logo-preview">
+                                        <i class="fas fa-shield-alt text-4xl text-gray-400"></i>
+                                    </div>
+                                    <label class="cursor-pointer bg-football text-white px-4 py-2 rounded">
+                                        <span>Subir logo</span>
+                                        <input type="file" class="hidden" id="club-logo" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-name">Nombre del club</label>
+                                    <input type="text" id="club-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control bg-gray-100 cursor-not-allowed" required readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-username">Nombre de usuario</label>
+                                    <input type="text" id="club-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-location">Ubicación</label>
+                                    <input type="text" id="club-location" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-league">Nivel de liga</label>
+                                    <select id="club-league" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                        <option value="">Selecciona el nivel de la liga</option>
+                                        <option value="Professional">Profesional</option>
+                                        <option value="Semi-Professional">Semi-Profesional</option>
+                                        <option value="Amateur">Amateur</option>
+                                        <option value="Youth">Juveniles</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-email">Email</label>
+                                    <input type="email" id="club-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-phone">Telefono</label>
+                                    <input type="tel" id="club-phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-website">Sitio web (opcional)</label>
+                                    <input type="url" id="club-website" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-gray-700 font-bold mb-2" for="club-description">Descripcion del club</label>
+                                    <textarea id="club-description" rows="4" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Describe your club, history, achievements, and what you're looking for in players."></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Guardar perfil</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="agent-profile" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Perfil de representante</h2>
+                        <form id="agent-profile-form">
+                            <div class="mb-6">
+                                <div class="flex flex-col items-center mb-4">
+                                    <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden" id="agent-photo-preview">
+                                        <i class="fas fa-user-tie text-4xl text-gray-400"></i>
+                                    </div>
+                                    <label class="cursor-pointer bg-football text-white px-4 py-2 rounded">
+                                        <span>Subir foto</span>
+                                        <input type="file" class="hidden" id="agent-photo" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-name">Nombre completo</label>
+                                    <input type="text" id="agent-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control bg-gray-100 cursor-not-allowed" required readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-username">Nombre de usuario</label>
+                                    <input type="text" id="agent-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-region">Region en la que trabaja</label>
+                                    <input type="text" id="agent-region" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-email">Email</label>
+                                    <input type="email" id="agent-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-phone">Telefono</label>
+                                    <input type="tel" id="agent-phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" required>
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-website">Sitio web (opcional)</label>
+                                    <input type="url" id="agent-website" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 font-bold mb-2">Preferencias de jugadores</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="agent-preference mr-2" value="Youth"> Juveniles
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="agent-preference mr-2" value="Professional"> Profesional
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="agent-preference mr-2" value="Amateur"> Amateur
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-gray-700 font-bold mb-2" for="agent-bio">Biografia</label>
+                                    <textarea id="agent-bio" rows="4" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Describe your background as an agent, your philosophy, and what kind of players/clubs you represent."></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Guardar perfil</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="player-search" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Buscar Jugadores</h2>
+                        <form id="player-search-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                            <div>
+                                <label for="search-player-name" class="block text-gray-700 font-bold mb-2">Nombre del jugador</label>
+                                <input type="text" id="search-player-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Ej: Lionel Messi">
+                            </div>
+                            <div class="range-slider">
+                                <label class="block text-gray-700 font-bold mb-2">Edad</label>
+                                <div class="flex items-center space-x-2">
+                                    <span id="age-min">14</span>
+                                    <input type="range" id="age-min-slider" min="14" max="45" value="14" class="slider flex-grow">
+                                    <span>-</span>
+                                    <span id="age-max">45</span>
+                                    <input type="range" id="age-max-slider" min="14" max="45" value="45" class="slider flex-grow">
+                                </div>
+                            </div>
+                            <div class="range-slider">
+                                <label class="block text-gray-700 font-bold mb-2">Altura (cm)</label>
+                                <div class="flex items-center space-x-2">
+                                    <span id="height-min">140</span>
+                                    <input type="range" id="height-min-slider" min="140" max="220" value="140" class="slider flex-grow">
+                                    <span>-</span>
+                                    <span id="height-max">220</span>
+                                    <input type="range" id="height-max-slider" min="140" max="220" value="220" class="slider flex-grow">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="search-player-position" class="block text-gray-700 font-bold mb-2">Posición</label>
+                                <select id="search-player-position" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control">
+                                    <option value="">Cualquiera</option>
+                                    <option value="Goalkeeper">Arquero</option>
+                                    <option value="Defender">Defensor</option>
+                                    <option value="Midfielder">Mediocampista</option>
+                                    <option value="Forward">Delantero</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="search-player-foot" class="block text-gray-700 font-bold mb-2">Pie habil</label>
+                                <select id="search-player-foot" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control">
+                                    <option value="">Cualquiera</option>
+                                    <option value="Right">Derecho</option>
+                                    <option value="Left">Izquierdo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="search-player-location" class="block text-gray-700 font-bold mb-2">Ubicación</label>
+                                <input type="text" id="search-player-location" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Ej: Buenos Aires">
+                            </div>
+                            <div class="md:col-span-2 lg:col-span-3 flex justify-end">
+                                <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Buscar</button>
+                            </div>
+                        </form>
+                        <div id="player-search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://randomuser.me/api/portraits/men/9.jpg" alt="Player" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Iván Ríos</h4>
+                                <p class="text-gray-600 text-sm">22 años | Delantero | 175cm</p>
+                                <p class="text-gray-500 text-xs">Ubicación: Barcelona, España</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Player" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Nicolás Ferreyra</h4>
+                                <p class="text-gray-600 text-sm">19 años | Mediocampista | 180cm</p>
+                                <p class="text-gray-500 text-xs">Ubicación: Londres, Reino Unido</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://randomuser.me/api/portraits/men/3.jpg" alt="Player" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Lautaro Benítez</h4>
+                                <p class="text-gray-600 text-sm">25 años | Defensor | 188cm</p>
+                                <p class="text-gray-500 text-xs">Ubicación: Roma, Italia</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="club-search" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Buscar Clubes</h2>
+                        <form id="club-search-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="search-club-name" class="block text-gray-700 font-bold mb-2">Nombre del club</label>
+                                <input type="text" id="search-club-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Ej: Real Madrid">
+                            </div>
+                            <div>
+                                <label for="search-club-location" class="block text-gray-700 font-bold mb-2">Ubicación</label>
+                                <input type="text" id="search-club-location" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Ej: Madrid, España">
+                            </div>
+                            <div>
+                                <label for="search-club-league" class="block text-gray-700 font-bold mb-2">Nivel de liga</label>
+                                <select id="search-club-league" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control">
+                                    <option value="">Cualquiera</option>
+                                    <option value="Professional">Profesional</option>
+                                    <option value="Semi-Professional">Semi-Profesional</option>
+                                    <option value="Amateur">Amateur</option>
+                                    <option value="Youth">Juveniles</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2 flex justify-end">
+                                <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Buscar</button>
+                            </div>
+                        </form>
+                        <div id="club-search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Escudo_Club_Atl%C3%A9tico_Brown_%28Adrogu%C3%A9%29.png" alt="Club Logo" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Club Atlético Brown</h4>
+                                <p class="text-gray-600 text-sm">Primera B Metropolitana | Buenos Aires, Adrogué</p>
+                                <p class="text-gray-500 text-xs">Buscando delantero central</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Logo_of_San_Mart%C3%ADn_de_Burzaco_%282023%29.png/1024px-Logo_of_San_Mart%C3%ADn_de_Burzaco_%282023%29.png" alt="Club Logo" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Club Social y Deportivo San Martín</h4>
+                                <p class="text-gray-600 text-sm">Primera B Metropolitana | Buenos Aires, Burzaco</p>
+                                <p class="text-gray-500 text-xs">Buscando mediocampistas defensivos</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="agent-search" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Buscar Representantes</h2>
+                        <form id="agent-search-form" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="search-agent-name" class="block text-gray-700 font-bold mb-2">Nombre del representante</label>
+                                <input type="text" id="search-agent-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Ej: Jorge Mendes">
+                            </div>
+                            <div>
+                                <label for="search-agent-region" class="block text-gray-700 font-bold mb-2">Región</label>
+                                <input type="text" id="search-agent-region" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Ej: Sudamérica">
+                            </div>
+                            <div>
+                                <label for="search-agent-preference" class="block text-gray-700 font-bold mb-2">Preferencia de jugador</label>
+                                <select id="search-agent-preference" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control">
+                                    <option value="">Cualquiera</option>
+                                    <option value="Youth">Juveniles</option>
+                                    <option value="Professional">Profesional</option>
+                                    <option value="Amateur">Amateur</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2 flex justify-end">
+                                <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Buscar</button>
+                            </div>
+                        </form>
+                        <div id="agent-search-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://randomuser.me/api/portraits/men/79.jpg" alt="Foto de Perfil Aleatoria" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Mateo Fierro</h4>
+                                <p class="text-gray-600 text-sm">Región: Córdoba | Especialidad: Jóvenes talentos</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                            <div class="bg-gray-100 p-4 rounded-lg shadow-sm text-center card-hover">
+                                <img src="https://randomuser.me/api/portraits/men/88.jpg" alt="Agent Photo" class="w-24 h-24 rounded-full mx-auto mb-2 object-cover">
+                                <h4 class="font-bold text-lg">Bruno Castiglioni</h4>
+                                <p class="text-gray-600 text-sm">Región: Buenos Aires | Especialidad: Profesionales y jóvenes amateurs</p>
+                                <button class="mt-3 bg-football text-white text-sm px-4 py-2 rounded">Ver Perfil</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="messages" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Mensajes</h2>
+                        <div class="space-y-4" id="messages-list">
+                            <!-- Los mensajes se insertarán aquí dinámicamente -->
+                        </div>
+                        <div class="mt-6">
+                            <button class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Nuevo mensaje</button>
+                        </div>
+                    </div>
+
+                    <div id="settings" class="hidden bg-white rounded-lg shadow-md p-6 mb-6">
+                        <h2 class="text-2xl font-bold mb-6">Configuración</h2>
+                        <form class="space-y-4">
+                            <div>
+                                <label for="setting-email" class="block text-gray-700 font-bold mb-2">Email</label>
+                                <input type="email" id="setting-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" value="usuario@example.com" disabled>
+                            </div>
+                            <div>
+                                <label for="setting-password" class="block text-gray-700 font-bold mb-2">Cambiar contraseña</label>
+                                <input type="password" id="setting-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none form-control" placeholder="Nueva contraseña">
+                            </div>
+                            <div>
+                                <label for="setting-notifications" class="block text-gray-700 font-bold mb-2">Notificaciones</label>
+                                <input type="checkbox" id="setting-notifications" class="mr-2" checked> Recibir notificaciones por correo
+                            </div>
+                            <button type="submit" class="px-6 py-3 bg-football text-white rounded-lg hover:bg-green-800 focus:outline-none">Guardar cambios</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden modal-overlay z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md relative">
+            <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl" id="close-auth-modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-center text-football mb-6" id="auth-modal-title">Iniciar sesión</h2>
+            
+            <div id="login-form-container">
+                <form id="login-form" class="space-y-4">
+                    <input type="email" id="login-email" placeholder="Email" required class="form-control w-full p-2 border rounded">
+                    <input type="password" id="login-password" placeholder="Contraseña" required class="form-control w-full p-2 border rounded">
+                    <button type="submit" class="w-full bg-football text-white p-2 rounded">Iniciar sesión</button>
+                </form>
+                <p class="mt-4 text-center">¿No tenés cuenta? <button id="show-register" class="text-football underline">Registrarse</button></p>
+            </div>
+
+            <div id="register-form-container" class="hidden">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-bold mb-2 text-center">Soy un...</label>
+                    <div class="flex justify-around space-x-2">
+                        <label class="cursor-pointer border-2 border-gray-300 rounded-lg p-3 text-center flex-1 transition duration-300 ease-in-out hover:border-football hover:bg-green-50">
+                            <i class="fas fa-user-alt text-football text-2xl block mb-1"></i>
+                            <input type="radio" name="user-type" value="player" class="hidden user-type-radio" checked>
+                            <div class="font-semibold">Jugador</div>
+                        </label>
+                        <label class="cursor-pointer border-2 border-gray-300 rounded-lg p-3 text-center flex-1 transition duration-300 ease-in-out hover:border-football hover:bg-green-50">
+                            <i class="fas fa-shield-alt text-football text-2xl block mb-1"></i>
+                            <input type="radio" name="user-type" value="club" class="hidden user-type-radio">
+                            <div class="font-semibold">Club</div>
+                        </label>
+                        <label class="cursor-pointer border-2 border-gray-300 rounded-lg p-3 text-center flex-1 transition duration-300 ease-in-out hover:border-football hover:bg-green-50">
+                            <i class="fas fa-briefcase text-football text-2xl block mb-1"></i>
+                            <input type="radio" name="user-type" value="agent" class="hidden user-type-radio">
+                            <div class="font-semibold">Representante</div>
+                        </label>
+                    </div>
+                </div>
+                <form id="register-form" class="space-y-4">
+                    <input type="text" id="register-name" placeholder="Nombre completo" required class="form-control w-full p-2 border rounded">
+                    <input type="text" id="register-username" placeholder="Nombre de usuario" required class="form-control w-full p-2 border rounded">
+                    <input type="email" id="register-email" placeholder="Email" required class="form-control w-full p-2 border rounded">
+                    <input type="password" id="register-password" placeholder="Contraseña" required class="form-control w-full p-2 border rounded">
+                    <input type="password" id="register-confirm-password" placeholder="Confirmar contraseña" required class="form-control w-full p-2 border rounded">
+                    <button type="submit" class="w-full bg-football text-white p-2 rounded">Registrarse</button>
+                </form>
+                <p class="mt-4 text-center">¿Ya tenés cuenta? <button id="show-login" class="text-football underline">Iniciar sesión</button></p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-gray-400 py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="font-bold mb-4">Conecta fútbol</h4>
+                    <p class="text-sm">La plataforma que une el mundo del fútbol.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Navegacion</h4>
+                    <ul class="space-y-2">
+                        <li><a href="javascript:void(0)" class="hover:underline">Inicio</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Planes</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Dashboard</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Soporte</h4>
+                    <ul class="space-y-2">
+                        <li><a href="javascript:void(0)" class="hover:underline">Preguntas frecuentes</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Ayuda</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Reportar un problema</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="javascript:void(0)" class="hover:underline">Terminos y condiciones</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Politicas de privicidad</a></li>
+                        <li><a href="javascript:void(0)" class="hover:underline">Cookie politicas</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-gray-700 my-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p>&copy; 2025 Conecta fútbol. Todos los derechos reservados.</p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="javascript:void(0)" class="hover:text-gray-300"><i class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:void(0)" class="hover:text-gray-300"><i class="fab fa-x"></i></a>
+                    <a href="javascript:void(0)" class="hover:text-gray-300"><i class="fab fa-instagram"></i></a>
+                    <a href="javascript:void(0)" class="hover:text-gray-300"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+const heroImages = [
+    'img/imagen1.png',
+    'img/imagen2.png',
+    'img/imagen3.png',
+    'img/imagen4.png'
+];
+let currentImg = 0;
+let showingCurrent = true;
+const imgCurrent = document.getElementById('slide-img-current');
+const imgNext = document.getElementById('slide-img-next');
+
+function slideToNextImage() {
+    const nextImgIndex = (currentImg + 1) % heroImages.length;
+
+    if (showingCurrent) {
+        imgNext.src = heroImages[nextImgIndex];
+        imgNext.classList.remove('slide-reset');
+        imgNext.classList.add('slide-in');
+        imgCurrent.classList.add('slide-out');
+    } else {
+        imgCurrent.src = heroImages[nextImgIndex];
+        imgCurrent.classList.remove('slide-reset');
+        imgCurrent.classList.add('slide-in');
+        imgNext.classList.add('slide-out');
+    }
+
+    setTimeout(() => {
+        if (showingCurrent) {
+            imgCurrent.classList.remove('slide-out');
+            imgNext.classList.remove('slide-in');
+            imgCurrent.classList.add('slide-reset');
+        } else {
+            imgNext.classList.remove('slide-out');
+            imgCurrent.classList.remove('slide-in');
+            imgNext.classList.add('slide-reset');
+        }
+        currentImg = nextImgIndex;
+        showingCurrent = !showingCurrent;
+    }, 700); // Debe coincidir con duration-700
+}
+setInterval(slideToNextImage, 3000);
+</script>
+<script>
+// filepath: s:\Descargas\desarrollo_software-main\desarrollo_software-main\index.html
+document.addEventListener('DOMContentLoaded', function() {
+    let userType = window.currentUser?.userType || localStorage.getItem('userType') || 'player';
+    const messagesList = document.getElementById('messages-list');
+    if (messagesList) {
+        let html = '';
+        if (userType === 'player') {
+            html = `
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p class="font-semibold">Sacachispas Fútbol Club (club)</p>
+                    <p class="text-gray-700 text-sm">Hola, estamos interesados en tu perfil de jugador. ¿Podemos agendar una llamada?</p>
+                    <span class="text-xs text-gray-500">Hace 2 horas</span>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p class="font-semibold">Valentín Mansilla (representante)</p>
+                    <p class="text-gray-700 text-sm">Vi tu perfil y creo que podríamos encontrar grandes oportunidades para ti.</p>
+                    <span class="text-xs text-gray-500">Ayer</span>
+                </div>
+            `;
+        } else if (userType === 'club') {
+            html = `
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p class="font-semibold">Martin Bonin (jugador)</p>
+                    <p class="text-gray-700 text-sm">Hola, estoy interesado en aplicar como jugador para su club en el puesto que necesitan. ¿Podemos conversar?</p>
+                    <span class="text-xs text-gray-500">Hace 1 hora</span>
+                </div>
+            `;
+        } else if (userType === 'agent') {
+            html = `
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <p class="font-semibold">Benjamin Sakti (jugador)</p>
+                    <p class="text-gray-700 text-sm">Hola, soy una joven promesa y he estado recibiendo ofertas de diferentes clubes, pero prefiero contar con un representante que se haga cargo de ese tipo de asuntos. ¿Podemos hablar?</p>
+                    <span class="text-xs text-gray-500">Hace 2 días</span>
+                </div>
+            `;
+        }
+        messagesList.innerHTML = html;
+    }
+});
+</script>
+</body>
+</html>

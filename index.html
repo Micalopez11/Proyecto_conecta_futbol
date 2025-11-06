@@ -658,6 +658,26 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <!-- Cliente Supabase -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  // Valores de Supabase
+  const SUPABASE_URL = 'https://ruoxjwrnvvszqfcehiex.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1b3hqd3JudnZzenFmY2VoaWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0ODM0NDQsImV4cCI6MjA3NzA1OTQ0NH0.5GxMB3l7bnjw1iZ4AkGiFn-vxa4jIyIyQmGopGBJ7xs';
+
+  // Crear el cliente globalmente
+  window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+
+<!-- Tu script principal -->
+<script src="script.js" type="module"></script>
+
+
+
+
+
     <script src="script.js"></script>
     <script>
 const heroImages = [

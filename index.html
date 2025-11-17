@@ -655,21 +655,29 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer>  
 
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+
+    <script src="./env-config.js"></script>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  window.supabase = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+</script>
+
 
     <!-- Cliente Supabase -->
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  // Valores de Supabase
-  const SUPABASE_URL = 'https://ruoxjwrnvvszqfcehiex.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1b3hqd3JudnZzenFmY2VoaWV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0ODM0NDQsImV4cCI6MjA3NzA1OTQ0NH0.5GxMB3l7bnjw1iZ4AkGiFn-vxa4jIyIyQmGopGBJ7xs';
+  // Estas variables serán inyectadas por Vercel (ver paso Vercel más abajo)
+  const SUPABASE_URL = window.SUPABASE_URL || '<fallback url (dev only)>';
+  const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || '<fallback anon key (dev only)>';
 
-  // Crear el cliente globalmente
   window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
+
 
 <!-- Tu script principal -->
 <script src="script.js" type="module"></script>

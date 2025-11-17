@@ -140,7 +140,7 @@
             }, 1500);
         });
 
-        // Seleccion del tipo deusuario en registro
+        // Seleccion del tipo de usuario en registro
         document.querySelectorAll('.user-type-radio').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.querySelectorAll('.user-type-radio').forEach(r => {
@@ -211,132 +211,118 @@
             document.querySelectorAll('.user-type-radio').forEach(r => r.parentElement.classList.remove('border-football', 'bg-green-50')); // Remove highlight
         }
 
-        function handleLogin(e) {
+        
+        async function handleLogin(e) {
             e.preventDefault();
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Basic validation
-            if (!email || !password) {
-                notyf.error('Por favor, ingresa tu email y contraseña.');
-                return;
-            }
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
 
-            // Mostrar el estado de carga
-            const submitBtn = loginForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Iniciando sesión...';
-            
-            // Simulate llamada API para el inicio de sesión 
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                
-                // Validar contra usuarios registrados
-                const foundUser = registeredUsers.find(user => user.email === email && user.password === password);
+  if (!email || !password) { notyf.error('Por favor, ingresa credenciales.'); return; }
 
-                if (foundUser) {
-                    currentUser = {
-                        username: foundUser.username,
-                        email: foundUser.email,
-                        name: foundUser.name, 
-                        userType: foundUser.userType,
-                        photoUrl: foundUser.photoUrl || 'https://placehold.co/40x40/cccccc/ffffff/png?text=User' // Usar la foto guardada o un placeholder
-                    };
-                    
-                    userType = foundUser.userType; 
-                    
-                    localStorage.setItem('authToken', 'demo-token-xyz'); 
-                    localStorage.setItem('userType', userType);
-                    localStorage.setItem('userName', currentUser.name); 
-                    localStorage.setItem('userUsername', currentUser.username); // Guardar el nombre de usuario
-                    localStorage.setItem('userEmail', currentUser.email); 
-                    localStorage.setItem('userPhotoUrl', currentUser.photoUrl); // ¡Guardar la URL de la foto!
+  const submitBtn = loginForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true; submitBtn.textContent = 'Iniciando sesión...';
 
-                    notyf.success('¡Inicio de sesión exitoso!');
-                    hideAuthModal();
-                    showDashboard();
-                } else {
-                    notyf.error('Email o contraseña incorrectos. Por favor, verifica tus credenciales o regístrate.'); 
-                }
-            }, 1000);
-        }
+  const { data, error } = await window.supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 
-        function handleRegister(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('register-name').value;
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const confirmPassword = document.getElementById('register-confirm-password').value;
-            
-            // Validacion basica
-            if (!userType) {
-                notyf.error('Por favor, selecciona un tipo de usuario (Jugador, Club o Representante).');
-                return;
-            }
-            
-            if (!name || !username || !email || !password || !confirmPassword) {
-                notyf.error('Por favor, completa todos los campos.');
-                return;
-            }
+  submitBtn.disabled = false; submitBtn.textContent = 'Iniciar sesión';
 
-            if (password !== confirmPassword) {
-                notyf.error('Las contraseñas no coinciden.');
-                return;
-            }
+  if (error) {
+    notyf.error('Error de login: ' + error.message);
+    return;
+  }
 
-            // Verificar si el email ya está registrado
-            if (registeredUsers.some(user => user.email === email)) {
-                notyf.error('Este email ya está registrado. Por favor, inicia sesión o usa otro email.');
-                return;
-            }
-            // Verificar si el nombre de usuario ya está en uso
-            if (registeredUsers.some(user => user.username === username)) {
-                notyf.error('Este nombre de usuario ya está en uso. Elige otro.');
-                return;
-            }
-            // Mostrar el estado de carga
-            const submitBtn = registerForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Registrando...';
-            
-            // Simular el llamado a la API para el registro
-            setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-                
-                // Registro exitoso
-                currentUser = {
-                    name: name,
-                    username: username,
-                    email: email,
-                    password: password, 
-                    userType: userType,
-                    photoUrl: 'https://placehold.co/40x40/cccccc/ffffff/png?text=User' // Asignar una foto por defecto al registrarse
-                };
+  // data.session contiene info; data.user tiene id
+  const user = data.user;
+  // Cargar profile
+  const { data: profiles, error: pErr } = await window.supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
 
-                // Añadir el nuevo usuario al array de usuarios registrados
-                registeredUsers.push(currentUser);
-                // Guardar el array actualizado en localStorage
-                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-                
-                localStorage.setItem('authToken', 'demo-token-xyz');
-                localStorage.setItem('userType', userType);
-                localStorage.setItem('userName', currentUser.name); 
-                localStorage.setItem('userName', currentUser.username);
-                localStorage.setItem('userEmail', currentUser.email); 
-                localStorage.setItem('userPhotoUrl', currentUser.photoUrl); // ¡Guardar la URL de la foto!
-                
-                notyf.success('¡Registro exitoso!');
-                hideAuthModal();
-                showDashboard();
-            }, 1000);
-        }
+  if (pErr && pErr.code !== 'PGRST116') { // si hay error inesperado
+    notyf.error('No se pudo cargar el perfil: ' + pErr.message);
+    return;
+  }
+
+  // Establecer currentUser en memoria con la info del profile
+  currentUser = Object.assign({}, profiles || {}, { email: user.email, id: user.id });
+  userType = currentUser.user_type;
+  // Guardar en localStorage lo mínimo (opcional, Supabase mantiene sesión via cookies)
+  localStorage.setItem('authToken', 'supabase-session'); 
+  localStorage.setItem('userType', userType);
+  localStorage.setItem('userName', currentUser.username || currentUser.full_name || '');
+  localStorage.setItem('userEmail', currentUser.email || '');
+
+  notyf.success('Inicio de sesión correcto');
+  hideAuthModal();
+  showDashboard();
+}
+
+
+
+        
+
+        async function handleRegister(e) {
+  e.preventDefault();
+  const name = document.getElementById('register-name').value;
+  const username = document.getElementById('register-username').value;
+  const email = document.getElementById('register-email').value;
+  const password = document.getElementById('register-password').value;
+  const confirmPassword = document.getElementById('register-confirm-password').value;
+
+  if (!userType) { notyf.error('Selecciona un tipo de usuario.'); return; }
+  if (password !== confirmPassword) { notyf.error('Las contraseñas no coinciden.'); return; }
+
+  const submitBtn = registerForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true; submitBtn.textContent = 'Registrando...';
+
+  // 1) Crear cuenta en Supabase Auth
+  const { data: signUpData, error: signUpError } = await window.supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (signUpError) {
+    notyf.error('Error al registrar: ' + signUpError.message);
+    submitBtn.disabled = false; submitBtn.textContent = 'Registrarse';
+    return;
+  }
+
+  // signUpData.user contiene el id
+  const userId = signUpData.user?.id;
+
+  // 2) Crear profile en la tabla profiles
+  const { error: insertError } = await window.supabase
+    .from('profiles')
+    .insert([{
+      id: userId,
+      username,
+      full_name: name,
+      user_type: userType,
+      email,
+      photo_url: null
+    }]);
+
+  if (insertError) {
+    notyf.error('Error guardando el perfil: ' + insertError.message);
+    // (opcional) revertir registro de auth si quieres
+    submitBtn.disabled = false; submitBtn.textContent = 'Registrarse';
+    return;
+  }
+
+  notyf.success('Registro exitoso. Por favor confirma tu email si corresponde.');
+  submitBtn.disabled = false; submitBtn.textContent = 'Registrarse';
+
+  // Cerrar modal y dejar al usuario iniciar sesión (o autologin si prefieres)
+  hideAuthModal();
+}
+
+
+
 
         function logout() {
             currentUser = null;
@@ -484,66 +470,65 @@
             showPage(userType + '-profile');
         }
 
-        function handleProfileSubmit(e) {
-            e.preventDefault();
-            notyf.success('¡Perfil guardado exitosamente!');
-            console.log('Profile saved!');
+        
 
-            // Simulación: Si se sube una foto en el perfil, actualiza la foto del usuario actual
-            // Esto es muy básico; en un entorno real, la URL de la imagen se guardaría en el backend.
-            let photoInput;
-            let photoPreview;
+        async function handleProfileSubmit(e) {
+  e.preventDefault();
+  notyf.success('Guardando perfil...');
 
-            if (userType === 'player') {
-                photoInput = document.getElementById('player-photo');
-                photoPreview = document.getElementById('player-photo-preview');
-                newUsername = document.getElementById('player-username').value;
-            } else if (userType === 'club') {
-                photoInput = document.getElementById('club-logo');
-                photoPreview = document.getElementById('club-logo-preview');
-                newUsername = document.getElementById('club-username').value;
-            } else if (userType === 'agent') {
-                photoInput = document.getElementById('agent-photo');
-                photoPreview = document.getElementById('agent-photo-preview');
-                newUsername = document.getElementById('agent-username').value;
-            }
-           if (newUsername && currentUser.username !== newUsername) {
-                currentUser.username = newUsername;
-                const userIndex = registeredUsers.findIndex(u => u.email === currentUser.email);
-                if (userIndex !== -1) {
-                    registeredUsers[userIndex].username = newUsername;
-                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-                }
-                localStorage.setItem('userUsername', newUsername);
-            }
+  // Determinar campos según userType
+  let payload = {};
+  if (userType === 'player') {
+    payload.username = document.getElementById('player-username').value;
+    payload.age = parseInt(document.getElementById('player-age').value) || null;
+    payload.height_cm = parseInt(document.getElementById('player-height').value) || null;
+    payload.weight_kg = parseInt(document.getElementById('player-weight').value) || null;
+    payload.preferred_positions = Array.from(document.querySelectorAll('.player-position:checked')).map(i => i.value);
+    payload.dominant_foot = document.querySelector('input[name="dominant-foot"]:checked').value;
+    payload.location = document.getElementById('player-location').value;
+    payload.experience = document.getElementById('player-experience').value;
+  }
+  // Añade club/agent fields según corresponda (club-username, agent-region, etc.)
 
-            // 3. Actualizar el navbar
-            if (userNav && currentUser.username) {
-                userNav.textContent = currentUser.username;
-            }
+  // 1) Si file seleccionado, subir a Storage
+  const photoInput = (userType === 'player') ? document.getElementById('player-photo') :
+                     (userType === 'club') ? document.getElementById('club-logo') :
+                     document.getElementById('agent-photo');
+  if (photoInput && photoInput.files && photoInput.files[0]) {
+    const file = photoInput.files[0];
+    const filename = `${currentUser.id}/${Date.now()}_${file.name}`;
+    const { data: uploadData, error: uploadErr } = await window.supabase
+      .storage.from('avatars')
+      .upload(filename, file, { cacheControl: '3600', upsert: false });
 
-            if (photoInput && photoInput.files && photoInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newPhotoUrl = e.target.result;
-                    if (currentUser) {
-                        currentUser.photoUrl = newPhotoUrl;
-                        localStorage.setItem('userPhotoUrl', newPhotoUrl);
-                        // También actualizar el usuario en registeredUsers si lo tienes en localStorage
-                        const userIndex = registeredUsers.findIndex(u => u.email === currentUser.email);
-                        if (userIndex !== -1) {
-                            registeredUsers[userIndex].photoUrl = newPhotoUrl;
-                            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-                        }
-                        // Actualizar la foto en el navbar inmediatamente
-                        if (userProfilePicture) {
-                            userProfilePicture.src = newPhotoUrl;
-                        }
-                    }
-                };
-                reader.readAsDataURL(photoInput.files[0]);
-            }
-        }
+    if (uploadErr) {
+      notyf.error('Error subiendo la imagen: ' + uploadErr.message);
+      return;
+    }
+    // Obtener URL pública (si bucket público)
+    const { data: publicUrlData } = window.supabase.storage.from('avatars').getPublicUrl(uploadData.path);
+    payload.photo_url = publicUrlData.publicUrl;
+  }
+
+  payload.updated_at = new Date().toISOString();
+
+  // 2) Update en la tabla profiles (usa auth.uid() == id)
+  const { data: updated, error: updateErr } = await window.supabase
+    .from('profiles')
+    .upsert([{ id: currentUser.id, ...payload }], { returning: 'representation' });
+
+  if (updateErr) {
+    notyf.error('Error guardando perfil: ' + updateErr.message);
+    return;
+  }
+
+  // Actualizar currentUser y UI
+  currentUser = { ...currentUser, ...updated[0] };
+  if (currentUser.photo_url && userProfilePicture) userProfilePicture.src = currentUser.photo_url;
+
+  notyf.success('Perfil guardado correctamente.');
+}
+
 
         function handleSearchSubmit(e) {
             e.preventDefault();
@@ -622,32 +607,64 @@
             });
         }
 
-        // Check if user is already logged in (from localStorage)
-        function checkAuthState() {
-            const token = localStorage.getItem('authToken');
-            if (token) {
-                userType = localStorage.getItem('userType') || 'player';
-                const storedUserName = localStorage.getItem('userName'); // nombre de usuario
-                const storedUserEmail = localStorage.getItem('userEmail');
-                const storedUserPhotoUrl = localStorage.getItem('userPhotoUrl');
+        // Verifica si el usuario esta logueado (con supabase)
+async function checkAuthState() {
+  try {
+    // 1️⃣ Consultar si existe una sesión activa
+    const { data: { session }, error } = await window.supabase.auth.getSession();
 
-                // Buscar el usuario completo en registeredUsers para obtener el nombre real y username
-                const userData = registeredUsers.find(u => u.email === storedUserEmail);
-                currentUser = userData ? {...userData} : {
-                    username: storedUserName || 'DemoUser',
-                    name: '',
-                    email: storedUserEmail || 'demo@example.com',
-                    photoUrl: storedUserPhotoUrl || 'https://placehold.co/40x40/cccccc/ffffff/png?text=User'
-                };
-                showDashboard();
-            } else {
-                homePage.classList.remove('hidden');
-                dashboard.classList.add('hidden');
-                subscriptionPage.classList.add('hidden');
-                navButtons.classList.remove('hidden'); 
-                document.getElementById('user-nav').classList.add('hidden'); 
-            }
-        }
+    if (error) {
+      console.error('Error obteniendo sesión:', error.message);
+    }
+
+    // 2️⃣ Si hay sesión activa (usuario autenticado)
+    if (session && session.user) {
+      const user = session.user;
+
+      // 3️⃣ Buscar el perfil del usuario en la tabla "profiles"
+      const { data: profile, error: profileError } = await window.supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        console.error('Error cargando perfil:', profileError.message);
+        notyf.error('No se pudo cargar tu perfil.');
+        return;
+      }
+
+      // 4️⃣ Guardar el usuario actual en memoria
+      currentUser = {
+        ...profile,
+        email: user.email,
+        id: user.id,
+      };
+      userType = profile.user_type;
+
+      // 5️⃣ Mostrar el dashboard del usuario
+      showDashboard();
+
+      // 6️⃣ Actualizar la foto y el nombre en la interfaz si existen
+      if (currentUser.photo_url && userProfilePicture) {
+        userProfilePicture.src = currentUser.photo_url;
+      }
+      if (userProfileName) {
+        userProfileName.textContent = currentUser.full_name || currentUser.username || '';
+      }
+
+    } else {
+      // 7️⃣ Si no hay sesión, volver al inicio
+      homePage.classList.remove('hidden');
+      dashboard.classList.add('hidden');
+      subscriptionPage.classList.add('hidden');
+      navButtons.classList.remove('hidden');
+      document.getElementById('user-nav').classList.add('hidden');
+    }
+  } catch (err) {
+    console.error('Error en checkAuthState:', err);
+  }
+}
 
         // Call this on page load
         checkAuthState();

@@ -325,9 +325,9 @@ async function handleRegister(e) {
   submitBtn.textContent = 'Completado';
 
   // Opcional: Redirigir al login
-  setTimeout(() => {
-    window.location.href = 'login.html';
-  }, 1500);
+  //setTimeout(() => {
+  //  window.location.href = 'login.html';
+ // }, 1500);
 }
 
 

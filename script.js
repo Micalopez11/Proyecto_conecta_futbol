@@ -264,6 +264,75 @@
 
 
 
+//async function handleRegister(e) {
+//  e.preventDefault();
+
+ // const name = document.getElementById('register-name').value;
+ // const username = document.getElementById('register-username').value;
+ // const email = document.getElementById('register-email').value;
+ // const password = document.getElementById('register-password').value;
+ // const confirmPassword = document.getElementById('register-confirm-password').value;
+
+  // Detectar el tipo de usuario
+  //const userType = document.querySelector('input[name="user-type"]:checked')?.value;
+
+ // if (!userType) { notyf.error('Selecciona un tipo de usuario.'); return; }
+ // if (password !== confirmPassword) { notyf.error('Las contraseñas no coinciden.'); return; }
+
+  //const submitBtn = registerForm.querySelector('button[type="submit"]');
+  //submitBtn.disabled = true; 
+  //submitBtn.textContent = 'Registrando...';
+
+  // 1️⃣ Crear cuenta en Supabase Auth
+  //const { data: signUpData, error: signUpError } = await window.supabase.auth.signUp({
+  //  email,
+  //  password
+  //});
+
+  //if (signUpError) {
+  //  console.error(signUpError);
+  //  notyf.error('Error creando usuario: ' + signUpError.message);
+  //  submitBtn.disabled = false;
+  //  submitBtn.textContent = 'Registrarse';
+  //  return;
+ // }
+
+  // 2️⃣ Insertar datos en la tabla "profiles"
+  //const userId = signUpData.user.id;
+
+  //const { error: insertError } = await window.supabase
+  //  .from("profiles")
+  //  .insert([
+   //   {
+   //     id: userId,        // ⚠️ IMPORTANTE: debe coincidir con el ID de auth.users
+   //     full_name: name,
+   //     username: username,
+  //      email: email,
+   //     user_type: userType
+  //    }
+ //   ]);
+
+ // if (insertError) {
+  //  console.error(insertError);
+ //   notyf.error('Error guardando datos del perfil');
+ //   submitBtn.disabled = false;
+  //  submitBtn.textContent = 'Registrarse';
+ //   return;
+ // }
+
+  // 3️⃣ Registro exitoso
+ // notyf.success('Registro exitoso. ¡Bienvenido!');
+  //submitBtn.textContent = 'Completado';
+
+  // Opcional: Redirigir al login
+  //setTimeout(() => {
+  //  window.location.href = 'login.html';
+ // }, 1500);
+//}
+
+
+        
+
 async function handleRegister(e) {
   e.preventDefault();
 
@@ -312,27 +381,39 @@ async function handleRegister(e) {
       }
     ]);
 
-  if (insertError) {
-    console.error(insertError);
-    notyf.error('Error guardando datos del perfil');
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Registrarse';
-    return;
-  }
+    if (insertError) {
+        console.error(insertError);
+        notyf.error('Error guardando datos del perfil');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Registrarse';
+        return;
+    }
 
-  // 3️⃣ Registro exitoso
-  notyf.success('Registro exitoso. ¡Bienvenido!');
-  submitBtn.textContent = 'Completado';
+    // 3️⃣ Registro exitoso
+    notyf.success('Registro exitoso. ¡Bienvenido!');
+    submitBtn.textContent = 'Completado';
 
-  // Opcional: Redirigir al login
-  //setTimeout(() => {
-  //  window.location.href = 'login.html';
- // }, 1500);
+    // 👉 4️⃣ Guardar info en memoria como haces en login:
+    currentUser = {
+        id: userId,
+        email: email,
+        username: username,
+        user_type: userType,
+        full_name: name
+    };
+
+    // Guardar en localStorage (opcional):
+    localStorage.setItem('authToken', 'supabase-session');
+    localStorage.setItem('userType', userType);
+    localStorage.setItem('userName', username);
+    localStorage.setItem('userEmail', email);
+
+    // 👉 5️⃣ Cerrar modal
+    hideAuthModal();
+
+    // 👉 6️⃣ Redirigir al dashboard
+    showDashboard();
 }
-
-
-        
-
       
 
 
